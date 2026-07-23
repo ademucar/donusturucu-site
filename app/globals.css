@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+html { color-scheme: dark; }
+
+body {
+  min-height: 100vh;
+  color: #e2e8f0;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  background-color: #06060e;
+  background-image:
+    radial-gradient(55% 45% at 12% 0%, rgba(139, 92, 246, 0.16), transparent 60%),
+    radial-gradient(45% 40% at 100% 15%, rgba(99, 102, 241, 0.14), transparent 55%),
+    radial-gradient(40% 40% at 50% 100%, rgba(217, 70, 239, 0.10), transparent 60%);
+  background-repeat: no-repeat;
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, #c4b5fd, #8b5cf6 55%, #6366f1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #211d3f; border-radius: 999px; }
