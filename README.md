@@ -40,16 +40,15 @@ Ardından tarayıcıda `http://localhost:3000` adresini aç.
 
 ## 🌐 Canlı Demo
 
-🔗 [donusturucu-site.vercel.app](https://donusturucu-site.vercel.app)
+🔗 [ceviriyo.vercel.app](https://ceviriyo.vercel.app)
 
 ---
 
 <div align="center">
 
-**Adem Uçar** tarafından geliştirildi
 
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ademucar)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/adem-u%C3%A7ar-39501731a/)
+[![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=flat&logo=instagram&logoColor=white)](https://www.instagram.com/ademucarr_/)
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:6366f1,100:8b5cf6&height=100&section=footer" width="100%" />
 
