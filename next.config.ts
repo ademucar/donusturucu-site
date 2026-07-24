@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["pdf-to-img", "@napi-rs/canvas"],
+  serverExternalPackages: ["mupdf"],
   outputFileTracingIncludes: {
-    "/api/convert/pdf-to-image": ["./node_modules/@napi-rs/canvas-*/**"],
+    "/api/convert/pdf-to-image": ["./node_modules/mupdf/dist/**"],
   },
   allowedDevOrigins: ["192.168.0.10"],
 };

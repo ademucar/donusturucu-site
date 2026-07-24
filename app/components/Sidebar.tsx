@@ -13,8 +13,8 @@ export default function Sidebar() {
           <ArrowLeftRight className="h-5 w-5 text-white" />
         </span>
         <span>
-          <span className="block text-lg font-bold leading-tight text-white">Dönüştür</span>
-          <span className="block text-xs text-slate-400">Dosya Dönüştürücü</span>
+          <span className="block text-lg font-bold leading-tight text-white">Çeviriyo</span>
+          <span className="block text-xs text-slate-400">PDF ve Resim Aracı</span>
         </span>
       </Link>
       <NavLinks pathname={pathname} />

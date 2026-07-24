@@ -16,7 +16,7 @@ export default function MobileNav() {
           <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600">
             <ArrowLeftRight className="h-4 w-4 text-white" />
           </span>
-          <span className="font-bold text-white">Dönüştür</span>
+          <span className="font-bold text-white">Çeviriyo</span>
         </Link>
         <button
           type="button"

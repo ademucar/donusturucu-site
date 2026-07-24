@@ -8,8 +8,8 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Dönüştür — Dosya Dönüştürücü",
-  description: "Hızlı, kolay ve güvenli dosya dönüştürme.",
+  title: "PDF ve Resim Aracı",
+  description: "Hızlı, kolay ve güvenli dönüştürme.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
