@@ -8,7 +8,7 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "PDF ve Resim Aracı",
+  title: "Çeviriyo",
   description: "Hızlı, kolay ve güvenli dönüştürme.",
 };
 
