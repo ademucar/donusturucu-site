@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import JSZip from "jszip";
 import ToolShell from "@/app/components/ToolShell";
 import Dropzone from "@/app/components/Dropzone";
 import PrimaryButton from "@/app/components/PrimaryButton";
@@ -15,16 +16,36 @@ export default function PdfToImage() {
     setLoading(true);
     setError("");
     try {
-      const form = new FormData();
-      form.append("file", file);
-      const res = await fetch("/api/convert/pdf-to-image", { method: "POST", body: form });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Dönüştürme başarısız.");
+      const pdfjs = await import("pdfjs-dist");
+      // worker'ı sürümle eşleşen CDN'den yükle (bundler derdi olmaz)
+      pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
+
+      const buf = await file.arrayBuffer();
+      const baseName = file.name.replace(/\.[^.]+$/, "");
+      const pdf = await pdfjs.getDocument({ data: buf }).promise;
+
+      const images: { name: string; data: Blob }[] = [];
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: 2 });
+        const canvas = document.createElement("canvas");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext("2d")!;
+        await page.render({ canvas, canvasContext: ctx, viewport }).promise;
+        const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/png"));
+        if (blob) images.push({ name: `${baseName}-sayfa-${i}.png`, data: blob });
       }
-      const isZip = (res.headers.get("Content-Type") || "").includes("zip");
-      const base = file.name.replace(/\.[^.]+$/, "");
-      downloadBlob(await res.blob(), isZip ? `${base}.zip` : `${base}-sayfa-1.png`);
+
+      if (images.length === 0) throw new Error("PDF'te sayfa bulunamadı.");
+      if (images.length === 1) {
+        downloadBlob(images[0].data, images[0].name);
+      } else {
+        const zip = new JSZip();
+        images.forEach((img) => zip.file(img.name, img.data));
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        downloadBlob(zipBlob, `${baseName}.zip`);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Bir hata oluştu.");
     } finally {
@@ -36,7 +57,7 @@ export default function PdfToImage() {
     <ToolShell
       title="PDF'ten"
       accent="Görsel"
-      subtitle="Her sayfa ayrı PNG olur. Çok sayfalıysa ZIP olarak iner."
+      subtitle="Her sayfa ayrı PNG olur. Çok sayfalıysa ZIP olarak iner. Cihazınızda işlenir."
       steps={["Dosya Seç", "Görsele Çevir"]}
       current={file ? 2 : 1}
     >
