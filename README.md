@@ -27,16 +27,6 @@
 - **pdf-lib** & **pdf-to-img** — PDF işlemleri
 - **Vercel** — deploy
 
-## 💻 Kurulum
-
-```bash
-git clone https://github.com/ademucar/donusturucu-site.git
-cd donusturucu-site
-npm install
-npm run dev
-```
-
-Ardından tarayıcıda `http://localhost:3000` adresini aç.
 
 ## 🌐 Canlı Demo
 
