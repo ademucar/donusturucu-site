@@ -38,7 +38,24 @@ export default function MobileNav() {
                 <X className="h-5 w-5" />
               </button>
             </div>
+            
             <NavLinks pathname={pathname} onNavigate={() => setOpen(false)} />
+
+            {/* Geliştirici Bilgisi Alanı (Mobil) */}
+            <div className="mt-auto pt-6 pb-2 text-xs text-slate-500 text-center border-t border-white/5">
+              <p>
+                Developed by{" "}
+                <a 
+                  href="https://ademucar.com.tr/" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-slate-300 font-medium hover:text-white transition-colors"
+                >
+                  Adem Uçar
+                </a>
+              </p>
+            </div>
+
           </div>
         </div>
       )}
