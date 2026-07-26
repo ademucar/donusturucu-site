@@ -45,7 +45,7 @@ export default function Home() {
   }
 
   return (
-    <ToolShell title="Görselinizi" accent="Dönüştürün" subtitle="JPG, PNG ve WebP arasında hızlıca çevirin. Dosya cihazınızda işlenir." steps={["Dosya Seç", "Format Seç", "Dönüştür"]} current={loading ? 3 : file ? 2 : 1}>
+    <ToolShell title="Görselinizi" accent="Dönüştürün" subtitle="JPG, PNG ve WebP arasında hızlıca çevirin." steps={["Dosya Seç", "Format Seç", "Dönüştür"]} current={loading ? 3 : file ? 2 : 1}>
       <Dropzone accept="image/*" files={file ? [file] : []} onFiles={(f) => setFile(f[0] ?? null)} />
       <div className="mt-5">
         <label className="mb-2 block text-sm text-slate-400">Hedef format</label>

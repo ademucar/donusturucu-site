@@ -62,7 +62,7 @@ export default function PdfPages() {
   }
 
   return (
-    <ToolShell title="PDF" accent="Sayfa Seç / Sil" subtitle="Belirttiğiniz sayfaları tutun ya da silin. Cihazınızda işlenir." steps={["Dosya Seç", "Ayarla & Uygula"]} current={file ? 2 : 1}>
+    <ToolShell title="PDF" accent="Sayfa Seç / Sil" subtitle="Belirttiğiniz sayfaları tutun ya da silin." steps={["Dosya Seç", "Ayarla & Uygula"]} current={file ? 2 : 1}>
       <Dropzone accept="application/pdf" files={file ? [file] : []} onFiles={(f) => setFile(f[0] ?? null)} />
       <div className="mt-5 space-y-4">
         <div className="flex gap-2">

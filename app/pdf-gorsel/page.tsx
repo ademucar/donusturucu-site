@@ -56,8 +56,8 @@ export default function PdfToImage() {
   return (
     <ToolShell
       title="PDF'ten"
-      accent="Görsel"
-      subtitle="Her sayfa ayrı PNG olur. Çok sayfalıysa ZIP olarak iner. Cihazınızda işlenir."
+      accent="Görsel'e"
+      subtitle="Her sayfa ayrı PNG olur. Çok sayfalıysa ZIP olarak iner."
       steps={["Dosya Seç", "Görsele Çevir"]}
       current={file ? 2 : 1}
     >
