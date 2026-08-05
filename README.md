@@ -28,7 +28,7 @@
 - **Vercel** — deploy
 
 
-## 🌐 Canlı Demo
+## 🌐 Canlı Site
 
 🔗 [ceviriyo.com.tr](https://ceviriyo.com.tr)
 
