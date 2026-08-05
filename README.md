@@ -30,7 +30,7 @@
 
 ## 🌐 Canlı Demo
 
-🔗 [ceviriyo.vercel.app](https://ceviriyo.vercel.app)
+🔗 [ceviriyo.com.tr](https://ceviriyo.com.tr)
 
 ---
 
