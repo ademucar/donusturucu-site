@@ -4,6 +4,7 @@ import ToolShell from "@/app/components/ToolShell";
 import Dropzone from "@/app/components/Dropzone";
 import PrimaryButton from "@/app/components/PrimaryButton";
 import { downloadBlob } from "@/app/lib/download";
+import { decodeToDrawable, isHeic } from "@/app/lib/image";
 
 const FORMATS = [
   { value: "image/jpeg", label: "JPG / JPEG", ext: "jpg" },
@@ -23,7 +24,9 @@ export default function Home() {
     setError("");
     try {
       const fmt = FORMATS.find((f) => f.value === target)!;
-      const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+      // iPhone HEIC'lerini tarayıcı doğrudan çözemez; önce araya çeviri koy
+      const source = await decodeToDrawable(file);
+      const bitmap = await createImageBitmap(source, { imageOrientation: "from-image" });
       const canvas = document.createElement("canvas");
       canvas.width = bitmap.width;
       canvas.height = bitmap.height;
@@ -45,8 +48,11 @@ export default function Home() {
   }
 
   return (
-    <ToolShell title="Görselinizi" accent="Dönüştürün" subtitle="JPG, PNG ve WebP arasında hızlıca çevirin." steps={["Dosya Seç", "Format Seç", "Dönüştür"]} current={loading ? 3 : file ? 2 : 1}>
-      <Dropzone accept="image/*" files={file ? [file] : []} onFiles={(f) => setFile(f[0] ?? null)} />
+    <ToolShell title="Görselinizi" accent="Dönüştürün" subtitle="JPG, PNG, WebP ve iPhone HEIC dosyaları arasında hızlıca çevirin." steps={["Dosya Seç", "Format Seç", "Dönüştür"]} current={loading ? 3 : file ? 2 : 1}>
+      <Dropzone accept="image/*,.heic,.heif" files={file ? [file] : []} onFiles={(f) => setFile(f[0] ?? null)} />
+      {file && isHeic(file) && (
+        <p className="mt-3 text-sm text-violet-300">HEIC algılandı; dönüştürme biraz uzun sürebilir.</p>
+      )}
       <div className="mt-5">
         <label className="mb-2 block text-sm text-slate-400">Hedef format</label>
         <select value={target} onChange={(e) => setTarget(e.target.value)} className="w-full rounded-xl border border-white/10 bg-white/5 p-3 text-slate-200 outline-none focus:border-violet-400/60">

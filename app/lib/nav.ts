@@ -1,6 +1,6 @@
 import {
   Image as ImageIcon, FileImage, FileText, Files, Scissors,
-  Crop, Smartphone,
+  Crop, Scaling, Shrink,
   type LucideIcon,
 } from "lucide-react";
 
@@ -12,8 +12,9 @@ export const groups: NavGroup[] = [
     label: "Görsel",
     items: [
       { href: "/", label: "Görsel Dönüştürücü", icon: ImageIcon },
-      { href: "/gorsel-arac", label: "Kırp & Sıkıştır", icon: Crop },
-      { href: "/heic-jpg", label: "HEIC → JPG", icon: Smartphone },
+      { href: "/gorsel-kirp", label: "Kırp", icon: Crop },
+      { href: "/gorsel-boyutlandir", label: "Boyutlandır", icon: Scaling },
+      { href: "/gorsel-sikistir", label: "Sıkıştır", icon: Shrink },
       { href: "/gorsel-pdf", label: "Görsel → PDF", icon: FileImage },
     ],
   },
