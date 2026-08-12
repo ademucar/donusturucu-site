@@ -48,10 +48,12 @@ export default function Home() {
   }
 
   return (
-    <ToolShell title="Görselinizi" accent="Dönüştürün" subtitle="JPG, PNG, WebP ve iPhone HEIC dosyaları arasında hızlıca çevirin." steps={["Dosya Seç", "Format Seç", "Dönüştür"]} current={loading ? 3 : file ? 2 : 1}>
+    <ToolShell title="Görselinizi" accent="Dönüştürün" subtitle="JPG, PNG, WebP ve iPhone HEIC/HEIF dosyalarını hızlıca çevirin." steps={["Dosya Seç", "Format Seç", "Dönüştür"]} current={loading ? 3 : file ? 2 : 1}>
       <Dropzone accept="image/*,.heic,.heif" files={file ? [file] : []} onFiles={(f) => setFile(f[0] ?? null)} />
       {file && isHeic(file) && (
-        <p className="mt-3 text-sm text-violet-300">HEIC algılandı; dönüştürme biraz uzun sürebilir.</p>
+        <p className="mt-3 text-sm text-violet-300">
+          HEIC/HEIF algılandı; dönüştürme biraz uzun sürebilir.
+        </p>
       )}
       <div className="mt-5">
         <label className="mb-2 block text-sm text-slate-400">Hedef format</label>

@@ -5,35 +5,36 @@ import Dropzone from "@/app/components/Dropzone";
 import PrimaryButton from "@/app/components/PrimaryButton";
 import ResultBar from "@/app/components/ResultBar";
 import { useImageProcessor } from "@/app/lib/useImageProcessor";
-import { extFor, isLossy, renderImage } from "@/app/lib/image";
-
-const FORMATS = [
-  { value: "image/jpeg", label: "JPG / JPEG" },
-  { value: "image/webp", label: "WebP (en iyi sıkıştırma)" },
-  { value: "image/png", label: "PNG (kayıpsız)" },
-];
+import { extFor, isLossy, outputTypeFor, renderImage } from "@/app/lib/image";
 
 export default function ImageCompress() {
-  const [format, setFormat] = useState("image/jpeg");
   const [quality, setQuality] = useState(80);
+  const [format, setFormat] = useState<string | null>(null);
 
   const render = useCallback(
-    (img: HTMLImageElement) => renderImage(img, { format, quality }),
+    (img: HTMLImageElement) => renderImage(img, { format: format!, quality }),
     [format, quality]
   );
 
   const { file, url, imgRef, onImageLoad, selectFile, decoding, result, busy, error, download } =
     useImageProcessor(render);
 
+  function handleFiles(files: File[]) {
+    setFormat(files[0] ? outputTypeFor(files[0]) : null);
+    selectFile(files);
+  }
+
+  const lossy = format ? isLossy(format) : true;
+
   return (
     <ToolShell
       title="Görsel"
       accent="Sıkıştır"
-      subtitle="Kaliteyi ayarlayarak dosya boyutunu küçültün."
+      subtitle="Kaliteyi ayarlayarak dosya boyutunu küçültün. Format korunur."
       steps={["Dosya Seç", "Ayarla", "İndir"]}
       current={result ? 3 : file ? 2 : 1}
     >
-      <Dropzone accept="image/*,.heic,.heif" files={file ? [file] : []} onFiles={selectFile} />
+      <Dropzone accept="image/*,.heic,.heif" files={file ? [file] : []} onFiles={handleFiles} />
 
       {decoding && <p className="mt-4 text-sm text-slate-400">Görsel açılıyor...</p>}
 
@@ -50,23 +51,8 @@ export default function ImageCompress() {
             />
           </div>
 
-          <div className="mt-5">
-            <label className="mb-2 block text-sm text-slate-400">Hedef format</label>
-            <select
-              value={format}
-              onChange={(e) => setFormat(e.target.value)}
-              className="w-full rounded-xl border border-white/10 bg-white/5 p-3 text-slate-200 outline-none focus:border-violet-400/60"
-            >
-              {FORMATS.map((f) => (
-                <option key={f.value} value={f.value} className="bg-slate-900">
-                  {f.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {isLossy(format) ? (
-            <div className="mt-4">
+          {lossy ? (
+            <div className="mt-5">
               <label className="mb-2 flex items-center justify-between text-sm text-slate-400">
                 <span>Kalite</span>
                 <span className="text-slate-300">%{quality}</span>
@@ -82,8 +68,10 @@ export default function ImageCompress() {
               />
             </div>
           ) : (
-            <p className="mt-3 text-xs text-slate-500">
-              PNG kayıpsızdır; kalite ayarı yoktur. Daha küçük dosya için WebP deneyin.
+            <p className="mt-5 text-sm text-amber-400">
+              PNG kayıpsız bir formattır; kalite düşürülerek küçültülemez. Boyutu azaltmak için
+              Boyutlandır aracını kullanabilir ya da görseli JPG/WebP olarak Görsel Dönüştürücü
+              üzerinden kaydedebilirsiniz.
             </p>
           )}
 
@@ -91,7 +79,10 @@ export default function ImageCompress() {
         </>
       )}
 
-      <PrimaryButton onClick={() => download(extFor(format), "sikistirilmis")} disabled={!result || busy}>
+      <PrimaryButton
+        onClick={() => format && download(extFor(format), "sikistirilmis")}
+        disabled={!result || busy}
+      >
         {busy ? "Hazırlanıyor..." : "İndir"}
       </PrimaryButton>
       {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
