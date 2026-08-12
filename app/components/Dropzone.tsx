@@ -36,7 +36,10 @@ export default function Dropzone({ accept, multiple, files, onFiles }: Props) {
         accept={accept}
         multiple={multiple}
         hidden
-        onChange={(e) => onFiles(Array.from(e.target.files ?? []))}
+        onChange={(e) => {
+          onFiles(Array.from(e.target.files ?? []));
+          e.target.value = "";
+        }}
       />
       <div className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-violet-500/80 to-indigo-600/80 shadow-lg shadow-violet-600/30">
         <UploadCloud className="h-7 w-7 text-white" />

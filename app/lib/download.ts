@@ -3,8 +3,11 @@ export function downloadBlob(blob: Blob, filename: string) {
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
+  a.rel = "noopener";
   document.body.appendChild(a);
   a.click();
   a.remove();
-  URL.revokeObjectURL(url);
+  // Firefox/Safari indirmeyi hemen başlatmaz; URL'i senkron iptal edersek
+  // dosya sessizce inmez. Bu yüzden iptali sonraya bırakıyoruz.
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }

@@ -18,7 +18,12 @@ export default function PdfMerge() {
     try {
       const merged = await PDFDocument.create();
       for (const file of files) {
-        const src = await PDFDocument.load(await file.arrayBuffer());
+        let src: PDFDocument;
+        try {
+          src = await PDFDocument.load(await file.arrayBuffer());
+        } catch {
+          throw new Error(`"${file.name}" açılamadı. Dosya bozuk veya şifreli/korumalı olabilir.`);
+        }
         const pages = await merged.copyPages(src, src.getPageIndices());
         pages.forEach((p) => merged.addPage(p));
       }

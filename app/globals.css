@@ -3,9 +3,20 @@
 html { color-scheme: dark; }
 
 body {
-  min-height: 100vh;
+  /* dvh: mobilde URL çubuğu gizlenince 100vh değişip sayfayı zıplatıyordu */
+  min-height: 100dvh;
   color: #e2e8f0;
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  background-color: #06060e;
+}
+
+/* Gradyanlar sabit bir katmanda: kaydırmada yeniden boyutlanıp titremiyor */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background-color: #06060e;
   background-image:
     radial-gradient(55% 45% at 12% 0%, rgba(139, 92, 246, 0.16), transparent 60%),

@@ -17,8 +17,11 @@ export default function PdfToImage() {
     setError("");
     try {
       const pdfjs = await import("pdfjs-dist");
-      // worker'ı sürümle eşleşen CDN'den yükle (bundler derdi olmaz)
-      pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
+      // worker'ı paketten yerel olarak yükle (CDN'e/ağ bağlantısına ihtiyaç yok)
+      pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+        "pdfjs-dist/build/pdf.worker.min.mjs",
+        import.meta.url
+      ).toString();
 
       const buf = await file.arrayBuffer();
       const baseName = file.name.replace(/\.[^.]+$/, "");
@@ -29,10 +32,10 @@ export default function PdfToImage() {
         const page = await pdf.getPage(i);
         const viewport = page.getViewport({ scale: 2 });
         const canvas = document.createElement("canvas");
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        const ctx = canvas.getContext("2d")!;
-        await page.render({ canvas, canvasContext: ctx, viewport }).promise;
+        canvas.width = Math.ceil(viewport.width);
+        canvas.height = Math.ceil(viewport.height);
+        // pdfjs v6: `canvas` ile `canvasContext` birlikte verilemez.
+        await page.render({ canvas, viewport }).promise;
         const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/png"));
         if (blob) images.push({ name: `${baseName}-sayfa-${i}.png`, data: blob });
       }

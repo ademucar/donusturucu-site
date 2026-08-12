@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="tr">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="flex min-h-screen">
+        <div className="flex min-h-dvh">
           <Sidebar />
           <div className="flex-1">
             <MobileNav />

@@ -23,7 +23,7 @@ export default function Home() {
     setError("");
     try {
       const fmt = FORMATS.find((f) => f.value === target)!;
-      const bitmap = await createImageBitmap(file);
+      const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
       const canvas = document.createElement("canvas");
       canvas.width = bitmap.width;
       canvas.height = bitmap.height;

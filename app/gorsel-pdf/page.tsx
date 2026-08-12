@@ -9,18 +9,25 @@ import { downloadBlob } from "@/app/lib/download";
 const A4 = { w: 595.28, h: 841.89 };
 const MARGIN = 20;
 
-async function fileToPngBytes(file: File): Promise<Uint8Array> {
-  const bitmap = await createImageBitmap(file);
+type EmbedImage = { bytes: Uint8Array; format: "png" | "jpg" };
+
+async function fileToEmbedImage(file: File): Promise<EmbedImage> {
+  const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
   const canvas = document.createElement("canvas");
   canvas.width = bitmap.width;
   canvas.height = bitmap.height;
   const ctx = canvas.getContext("2d")!;
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // JPEG fotoğrafları JPEG olarak yeniden kodla (çok daha küçük PDF); diğerleri PNG.
+  const asJpeg = file.type === "image/jpeg" || file.type === "image/jpg";
+  if (asJpeg) {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
   ctx.drawImage(bitmap, 0, 0);
-  const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/png"));
+  const type = asJpeg ? "image/jpeg" : "image/png";
+  const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, type, 0.92));
   if (!blob) throw new Error("Görsel işlenemedi.");
-  return new Uint8Array(await blob.arrayBuffer());
+  return { bytes: new Uint8Array(await blob.arrayBuffer()), format: asJpeg ? "jpg" : "png" };
 }
 
 export default function ImageToPdf() {
@@ -35,8 +42,8 @@ export default function ImageToPdf() {
     try {
       const pdf = await PDFDocument.create();
       for (const file of files) {
-        const png = await fileToPngBytes(file);
-        const img = await pdf.embedPng(png);
+        const { bytes, format } = await fileToEmbedImage(file);
+        const img = format === "jpg" ? await pdf.embedJpg(bytes) : await pdf.embedPng(bytes);
         const page = pdf.addPage([A4.w, A4.h]);
         const maxW = A4.w - MARGIN * 2;
         const maxH = A4.h - MARGIN * 2;

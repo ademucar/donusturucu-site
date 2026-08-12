@@ -36,7 +36,12 @@ export default function PdfPages() {
     setLoading(true);
     setError("");
     try {
-      const src = await PDFDocument.load(await file.arrayBuffer());
+      let src: PDFDocument;
+      try {
+        src = await PDFDocument.load(await file.arrayBuffer());
+      } catch {
+        throw new Error("PDF açılamadı. Dosya bozuk veya şifreli/korumalı olabilir.");
+      }
       const total = src.getPageCount();
       const selected = parsePages(pages, total);
       if (selected.length === 0) throw new Error("Geçerli sayfa numarası girin (örn: 1,3,5-7).");
