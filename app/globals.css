@@ -25,6 +25,17 @@ body::before {
   background-repeat: no-repeat;
 }
 
+/*
+ * react-image-crop kendi CSS'inde `.ReactCrop__child-wrapper > img` kuralıyla
+ * yüksekliği serbest bırakıyor ve Tailwind sınıfımızı eziyor. Daha yüksek
+ * özgüllükle geri alıyoruz ki önizleme ekrana sığsın (özellikle yatay modda).
+ */
+.crop-fit .ReactCrop__child-wrapper > img {
+  max-height: clamp(140px, 42dvh, 380px);
+  width: auto;
+  object-fit: contain;
+}
+
 .text-gradient {
   background: linear-gradient(90deg, #c4b5fd, #8b5cf6 55%, #6366f1);
   -webkit-background-clip: text;

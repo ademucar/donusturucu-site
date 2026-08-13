@@ -46,7 +46,7 @@ export default function ImageCompress() {
               ref={imgRef}
               src={url}
               alt="Önizleme"
-              className="mx-auto max-h-[300px] w-auto"
+              className="mx-auto max-h-[clamp(120px,34dvh,320px)] w-auto"
               onLoad={onImageLoad}
             />
           </div>

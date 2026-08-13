@@ -56,12 +56,12 @@ export default function ImageResize() {
               ref={imgRef}
               src={url}
               alt="Önizleme"
-              className="mx-auto max-h-[300px] w-auto"
+              className="mx-auto max-h-[clamp(120px,34dvh,320px)] w-auto"
               onLoad={onImageLoad}
             />
           </div>
 
-          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          <div className="mt-5 grid grid-cols-[repeat(auto-fit,minmax(8.5rem,1fr))] gap-4">
             <div>
               <label className="mb-2 block text-sm text-slate-400">Genişlik (px)</label>
               <input

@@ -28,7 +28,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Sidebar />
           <div className="flex-1">
             <MobileNav />
-            <main className="px-4 py-8 sm:px-10 sm:py-10">{children}</main>
+            <main className="px-[clamp(0.75rem,3.5vw,2.5rem)] py-[clamp(1rem,4vh,2.5rem)]">
+              {children}
+            </main>
           </div>
         </div>
       </body>

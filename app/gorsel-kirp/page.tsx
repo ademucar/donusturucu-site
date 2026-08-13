@@ -58,14 +58,14 @@ export default function ImageCrop() {
                 </button>
               )}
             </div>
-            <div className="overflow-hidden rounded-xl border border-white/10 bg-black/30 p-2">
+            <div className="crop-fit overflow-hidden rounded-xl border border-white/10 bg-black/30 p-2">
               <ReactCrop crop={crop} onChange={setCrop} onComplete={setCompletedCrop}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   ref={imgRef}
                   src={url}
                   alt="Önizleme"
-                  className="mx-auto max-h-[380px] w-auto"
+                  className="mx-auto max-h-[clamp(140px,42dvh,380px)] w-auto"
                   onLoad={onImageLoad}
                 />
               </ReactCrop>
