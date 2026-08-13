@@ -24,7 +24,7 @@ export default function Home() {
     setError("");
     try {
       const fmt = FORMATS.find((f) => f.value === target)!;
-      // iPhone HEIC'lerini tarayıcı doğrudan çözemez; önce araya çeviri koy
+      // HEIC/HEIF'i tarayıcı doğrudan çözemez; önce araya çeviri koy
       const source = await decodeToDrawable(file);
       const bitmap = await createImageBitmap(source, { imageOrientation: "from-image" });
       const canvas = document.createElement("canvas");
