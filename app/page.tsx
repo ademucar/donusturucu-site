@@ -4,7 +4,7 @@ import ToolShell from "@/app/components/ToolShell";
 import Dropzone from "@/app/components/Dropzone";
 import PrimaryButton from "@/app/components/PrimaryButton";
 import { downloadBlob } from "@/app/lib/download";
-import { decodeToDrawable, isHeic } from "@/app/lib/image";
+import { canvasToBlob, decodeToDrawable, isHeic } from "@/app/lib/image";
 
 const FORMATS = [
   { value: "image/jpeg", label: "JPG / JPEG", ext: "jpg" },
@@ -36,8 +36,7 @@ export default function Home() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
       ctx.drawImage(bitmap, 0, 0);
-      const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, target, 0.92));
-      if (!blob) throw new Error("Dönüştürme başarısız.");
+      const blob = await canvasToBlob(canvas, target, 0.92);
       const base = file.name.replace(/\.[^.]+$/, "");
       downloadBlob(blob, `${base}.${fmt.ext}`);
     } catch (e) {

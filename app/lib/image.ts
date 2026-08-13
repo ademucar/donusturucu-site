@@ -39,6 +39,31 @@ export function outputTypeFor(file: File): string {
   return "image/png";
 }
 
+const FORMAT_LABELS: Record<string, string> = {
+  "image/webp": "WebP",
+  "image/jpeg": "JPG",
+  "image/png": "PNG",
+};
+
+/**
+ * Tarayıcı desteklemediği bir hedef format istendiğinde toBlob hata vermez,
+ * sessizce PNG döndürür. Bu da yanlış uzantılı bozuk dosya demek olur.
+ * Üretilen türü kontrol edip anlaşılır bir hata veriyoruz.
+ */
+export async function canvasToBlob(
+  canvas: HTMLCanvasElement,
+  type: string,
+  quality?: number
+): Promise<Blob> {
+  const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, type, quality));
+  if (!blob) throw new Error("Görsel oluşturulamadı.");
+  if (blob.type !== type) {
+    const label = FORMAT_LABELS[type] ?? type;
+    throw new Error(`Tarayıcınız ${label} formatında kayıt desteklemiyor. Başka bir format seçin.`);
+  }
+  return blob;
+}
+
 export type Rect = { x: number; y: number; width: number; height: number };
 
 export type RenderOptions = {
@@ -97,9 +122,10 @@ export async function renderImage(
   }
   ctx.drawImage(img, cx, cy, cw, ch, 0, 0, canvas.width, canvas.height);
 
-  const blob = await new Promise<Blob | null>((res) =>
-    canvas.toBlob(res, o.format, isLossy(o.format) ? (o.quality ?? 90) / 100 : undefined)
+  const blob = await canvasToBlob(
+    canvas,
+    o.format,
+    isLossy(o.format) ? (o.quality ?? 90) / 100 : undefined
   );
-  if (!blob) return null;
   return { blob, width: canvas.width, height: canvas.height };
 }
