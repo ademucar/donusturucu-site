@@ -76,10 +76,16 @@ export default function Privacy() {
 
         <Section title="Barındırma ve teknik kayıtlar">
           <p>
-            Site, [BARINDIRMA SAĞLAYICINIZ] üzerinde barındırılmaktadır. Tüm web sitelerinde
-            olduğu gibi, sağlayıcı güvenlik ve hizmetin sürekliliği amacıyla teknik erişim
-            kayıtları (IP adresi, tarayıcı türü, istek zamanı gibi) tutabilir. Bu kayıtlara biz
-            dosya içeriğiniz için erişmeyiz; zaten dosyalarınız sunucuya hiç ulaşmaz.
+            Site, Vercel Inc. (ABD) altyapısı üzerinde barındırılmaktadır. Tüm web sitelerinde
+            olduğu gibi, barındırma sağlayıcısı güvenlik ve hizmetin sürekliliği amacıyla teknik
+            erişim kayıtları (IP adresi, tarayıcı türü, istek zamanı gibi) tutabilir. Bu kayıtlar
+            Vercel tarafından kendi gizlilik politikası kapsamında işlenir.
+          </p>
+          <p>
+            Siteyi ziyaret ettiğinizde bağlantı bilgileriniz teknik olarak yurt dışındaki bu
+            sunuculara ulaşır. Ancak <strong className="text-slate-300">dosyalarınız bu kapsamda
+            değildir</strong>: dosyalarınız sunucuya hiçbir zaman gönderilmediği için ne bizim ne
+            de barındırma sağlayıcısının erişimine açıktır.
           </p>
           <p>
             Sitede kullanılan yazı tipleri kendi sunucumuzdan sunulmaktadır; bu nedenle üçüncü
@@ -116,7 +122,13 @@ export default function Privacy() {
 
         <Section title="İletişim">
           <p>
-            Gizlilikle ilgili sorularınız için: [E-POSTA ADRESİNİZ]
+            Gizlilikle ilgili soru ve talepleriniz için bize ulaşabilirsiniz:{" "}
+            <a
+              href="mailto:ucaradem317@gmail.com"
+              className="text-violet-300 underline-offset-2 hover:underline"
+            >
+              ucaradem317@gmail.com
+            </a>
           </p>
         </Section>
       </div>
