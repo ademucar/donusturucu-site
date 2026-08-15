@@ -3,7 +3,6 @@ import { useState } from "react";
 import ToolShell from "@/app/components/ToolShell";
 import Dropzone from "@/app/components/Dropzone";
 import PrimaryButton from "@/app/components/PrimaryButton";
-import PrivacyBadge from "@/app/components/PrivacyBadge";
 import { downloadBlob } from "@/app/lib/download";
 import { decodeToDrawable, isHeic, renderWithFallback } from "@/app/lib/image";
 
@@ -59,7 +58,6 @@ export default function Home() {
   }
 
   return (
-    <>
     <ToolShell title="Görselinizi" accent="Dönüştürün" subtitle="JPG, PNG, WebP ve HEIC/HEIF dosyalarını hızlıca çevirin." steps={["Dosya Seç", "Format Seç", "Dönüştür"]} current={loading ? 3 : file ? 2 : 1}>
       <Dropzone accept="image/*,.heic,.heif" files={file ? [file] : []} onFiles={(f) => setFile(f[0] ?? null)} />
       {file && isHeic(file) && (
@@ -77,7 +75,5 @@ export default function Home() {
       {notice && <p className="mt-4 text-sm text-amber-400">{notice}</p>}
       {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
     </ToolShell>
-    <PrivacyBadge />
-    </>
   );
 }
