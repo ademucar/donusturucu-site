@@ -15,7 +15,19 @@ export default function Dropzone({ accept, multiple, files, onFiles }: Props) {
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      aria-label={
+        multiple ? "Dosya seçin veya buraya sürükleyin" : "Bir dosya seçin veya buraya sürükleyin"
+      }
       onClick={() => inputRef.current?.click()}
+      // Klavye kullanıcıları için: Enter/Boşluk dosya seçiciyi açsın
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          inputRef.current?.click();
+        }
+      }}
       onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
       onDragLeave={() => setDrag(false)}
       onDrop={(e) => {
@@ -24,7 +36,7 @@ export default function Dropzone({ accept, multiple, files, onFiles }: Props) {
         const dropped = Array.from(e.dataTransfer.files);
         onFiles(multiple ? dropped : dropped.slice(0, 1));
       }}
-      className={`group cursor-pointer rounded-2xl border-2 border-dashed p-8 text-center transition ${
+      className={`group cursor-pointer rounded-2xl border-2 border-dashed p-8 text-center transition focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${
         drag
           ? "border-violet-400 bg-violet-500/10"
           : "border-white/15 hover:border-violet-400/60 hover:bg-white/[0.03]"
@@ -50,7 +62,7 @@ export default function Dropzone({ accept, multiple, files, onFiles }: Props) {
           <p className="mt-1 text-sm text-slate-500">{multiple ? "Bir veya birden fazla dosya" : "Tek dosya"}</p>
         </>
       ) : (
-        <div className="text-sm">
+        <div className="text-sm" role="status" aria-live="polite">
           <p className="font-medium text-violet-300">{files.length} dosya seçildi</p>
           <p className="mt-1 truncate text-slate-500">{files.map((f) => f.name).join(", ")}</p>
         </div>

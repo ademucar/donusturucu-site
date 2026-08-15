@@ -39,6 +39,15 @@ export default function Privacy() {
           </p>
         </div>
 
+        <Section title="Veri sorumlusu">
+          <p>
+            Bu site, 6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında veri sorumlusu
+            sıfatıyla <strong className="text-slate-300">Adem Uçar</strong> tarafından
+            işletilmektedir. Her türlü soru ve talebiniz için sayfanın sonundaki iletişim
+            adresinden ulaşabilirsiniz.
+          </p>
+        </Section>
+
         <Section title="Dosyalarınıza ne oluyor?">
           <p>
             Çeviriyo&apos;daki tüm araçlar (görsel dönüştürme, kırpma, boyutlandırma, sıkıştırma,

@@ -68,8 +68,8 @@ export default function Home() {
         </p>
       )}
       <div className="mt-5">
-        <label className="mb-2 block text-sm text-slate-400">Hedef format</label>
-        <select value={target} onChange={(e) => setTarget(e.target.value)} className="w-full rounded-xl border border-white/10 bg-white/5 p-3 text-slate-200 outline-none focus:border-violet-400/60">
+        <label htmlFor="hedef-format" className="mb-2 block text-sm text-slate-400">Hedef format</label>
+        <select id="hedef-format" value={target} onChange={(e) => setTarget(e.target.value)} className="w-full rounded-xl border border-white/10 bg-white/5 p-3 text-slate-200 outline-none focus:border-violet-400/60">
           {FORMATS.map((f) => <option key={f.value} value={f.value} className="bg-slate-900">{f.label}</option>)}
         </select>
       </div>

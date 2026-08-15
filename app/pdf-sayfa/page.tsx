@@ -75,8 +75,8 @@ export default function PdfPages() {
           <button onClick={() => setMode("remove")} className={`flex-1 rounded-lg py-2 text-sm font-medium transition ${mode === "remove" ? "bg-violet-600 text-white" : "bg-white/5 text-slate-300 hover:bg-white/10"}`}>Bunları sil</button>
         </div>
         <div>
-          <label className="mb-2 block text-sm text-slate-400">Sayfalar</label>
-          <input value={pages} onChange={(e) => setPages(e.target.value)} placeholder="örn: 1,3,5-7" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 text-slate-200 outline-none focus:border-violet-400/60" />
+          <label htmlFor="sayfalar" className="mb-2 block text-sm text-slate-400">Sayfalar</label>
+          <input id="sayfalar" value={pages} onChange={(e) => setPages(e.target.value)} placeholder="örn: 1,3,5-7" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 text-slate-200 outline-none focus:border-violet-400/60" />
         </div>
       </div>
       <PrimaryButton onClick={handleRun} disabled={!file || loading}>{loading ? "Uygulanıyor..." : "Uygula"}</PrimaryButton>

@@ -63,8 +63,9 @@ export default function ImageResize() {
 
           <div className="mt-5 grid grid-cols-[repeat(auto-fit,minmax(8.5rem,1fr))] gap-4">
             <div>
-              <label className="mb-2 block text-sm text-slate-400">Genişlik (px)</label>
+              <label htmlFor="genislik" className="mb-2 block text-sm text-slate-400">Genişlik (px)</label>
               <input
+                id="genislik"
                 value={maxWidth}
                 onChange={(e) => setMaxWidth(onlyDigits(e.target.value))}
                 inputMode="numeric"
@@ -73,8 +74,9 @@ export default function ImageResize() {
               />
             </div>
             <div>
-              <label className="mb-2 block text-sm text-slate-400">Yükseklik (px)</label>
+              <label htmlFor="yukseklik" className="mb-2 block text-sm text-slate-400">Yükseklik (px)</label>
               <input
+                id="yukseklik"
                 value={maxHeight}
                 onChange={(e) => setMaxHeight(onlyDigits(e.target.value))}
                 inputMode="numeric"

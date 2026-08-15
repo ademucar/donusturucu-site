@@ -53,11 +53,12 @@ export default function ImageCompress() {
 
           {lossy ? (
             <div className="mt-5">
-              <label className="mb-2 flex items-center justify-between text-sm text-slate-400">
+              <label htmlFor="kalite" className="mb-2 flex items-center justify-between text-sm text-slate-400">
                 <span>Kalite</span>
                 <span className="text-slate-300">%{quality}</span>
               </label>
               <input
+                id="kalite"
                 type="range"
                 min={10}
                 max={100}
