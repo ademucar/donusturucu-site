@@ -3,8 +3,9 @@ import { useState } from "react";
 import ToolShell from "@/app/components/ToolShell";
 import Dropzone from "@/app/components/Dropzone";
 import PrimaryButton from "@/app/components/PrimaryButton";
+import PrivacyBadge from "@/app/components/PrivacyBadge";
 import { downloadBlob } from "@/app/lib/download";
-import { canvasToBlob, decodeToDrawable, isHeic } from "@/app/lib/image";
+import { decodeToDrawable, isHeic, renderWithFallback } from "@/app/lib/image";
 
 const FORMATS = [
   { value: "image/jpeg", label: "JPG / JPEG", ext: "jpg" },
@@ -17,28 +18,39 @@ export default function Home() {
   const [target, setTarget] = useState("image/png");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
 
   async function handleConvert() {
     if (!file) return;
     setLoading(true);
     setError("");
+    setNotice("");
     try {
       const fmt = FORMATS.find((f) => f.value === target)!;
       // HEIC/HEIF'i tarayıcı doğrudan çözemez; önce araya çeviri koy
       const source = await decodeToDrawable(file);
       const bitmap = await createImageBitmap(source, { imageOrientation: "from-image" });
-      const canvas = document.createElement("canvas");
-      canvas.width = bitmap.width;
-      canvas.height = bitmap.height;
-      const ctx = canvas.getContext("2d")!;
-      if (target === "image/jpeg") {
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const result = await renderWithFallback(
+        bitmap.width,
+        bitmap.height,
+        target,
+        0.92,
+        (ctx, w, h) => {
+          if (target === "image/jpeg") {
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, w, h);
+          }
+          ctx.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height, 0, 0, w, h);
+        }
+      );
+      bitmap.close();
+      if (result.reduced) {
+        setNotice(
+          `Görsel bu cihaz için çok büyüktü; ${result.width}×${result.height} boyutunda kaydedildi.`
+        );
       }
-      ctx.drawImage(bitmap, 0, 0);
-      const blob = await canvasToBlob(canvas, target, 0.92);
       const base = file.name.replace(/\.[^.]+$/, "");
-      downloadBlob(blob, `${base}.${fmt.ext}`);
+      downloadBlob(result.blob, `${base}.${fmt.ext}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Bir hata oluştu.");
     } finally {
@@ -47,6 +59,7 @@ export default function Home() {
   }
 
   return (
+    <>
     <ToolShell title="Görselinizi" accent="Dönüştürün" subtitle="JPG, PNG, WebP ve HEIC/HEIF dosyalarını hızlıca çevirin." steps={["Dosya Seç", "Format Seç", "Dönüştür"]} current={loading ? 3 : file ? 2 : 1}>
       <Dropzone accept="image/*,.heic,.heif" files={file ? [file] : []} onFiles={(f) => setFile(f[0] ?? null)} />
       {file && isHeic(file) && (
@@ -61,7 +74,10 @@ export default function Home() {
         </select>
       </div>
       <PrimaryButton onClick={handleConvert} disabled={!file || loading}>{loading ? "Dönüştürülüyor..." : "Dönüştür"}</PrimaryButton>
+      {notice && <p className="mt-4 text-sm text-amber-400">{notice}</p>}
       {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
     </ToolShell>
+    <PrivacyBadge />
+    </>
   );
 }

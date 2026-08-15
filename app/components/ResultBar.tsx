@@ -16,6 +16,11 @@ export default function ResultBar({ originalSize, result, busy }: Props) {
         <p className="text-slate-400">Hesaplanıyor...</p>
       ) : (
         <div className="flex flex-wrap items-center justify-between gap-2">
+          {result.reduced && (
+            <p className="w-full text-amber-400">
+              Görsel bu cihaz için çok büyüktü; küçültülerek işlendi.
+            </p>
+          )}
           <span className="text-slate-400">
             {formatBytes(originalSize)} →{" "}
             <span className="text-slate-200">{formatBytes(result.blob.size)}</span>

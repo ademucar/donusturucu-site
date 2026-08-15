@@ -50,6 +50,15 @@ export default function MobileNav() {
 
             {/* Geliştirici Bilgisi Alanı (Mobil) */}
             <div className="mt-auto pt-6 pb-2 text-xs text-slate-500 text-center border-t border-white/5">
+              <p className="mb-2">
+                <Link
+                  href="/gizlilik"
+                  onClick={() => setOpen(false)}
+                  className="hover:text-slate-300 transition-colors"
+                >
+                  Gizlilik Politikası
+                </Link>
+              </p>
               <p>
                 Developed by{" "}
                 <a 

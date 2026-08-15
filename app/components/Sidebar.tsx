@@ -21,6 +21,11 @@ export default function Sidebar() {
 
       {/* Geliştirici Bilgisi Alanı */}
       <div className="mt-auto pt-4 text-xs text-slate-500 text-center border-t border-white/5">
+        <p className="mb-2">
+          <Link href="/gizlilik" className="hover:text-slate-300 transition-colors">
+            Gizlilik Politikası
+          </Link>
+        </p>
         <p>
           Developed by{" "}
           <a 

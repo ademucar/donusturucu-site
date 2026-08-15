@@ -9,12 +9,14 @@ import { downloadBlob } from "@/app/lib/download";
 export default function PdfToImage() {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState("");
   const [error, setError] = useState("");
 
   async function handleConvert() {
     if (!file) return;
     setLoading(true);
     setError("");
+    setProgress("");
     try {
       const pdfjs = await import("pdfjs-dist");
       // worker'ı paketten yerel olarak yükle (CDN'e/ağ bağlantısına ihtiyaç yok)
@@ -29,6 +31,7 @@ export default function PdfToImage() {
 
       const images: { name: string; data: Blob }[] = [];
       for (let i = 1; i <= pdf.numPages; i++) {
+        setProgress(`Sayfa ${i} / ${pdf.numPages}`);
         const page = await pdf.getPage(i);
         const viewport = page.getViewport({ scale: 2 });
         const canvas = document.createElement("canvas");
@@ -38,12 +41,17 @@ export default function PdfToImage() {
         await page.render({ canvas, viewport }).promise;
         const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/png"));
         if (blob) images.push({ name: `${baseName}-sayfa-${i}.png`, data: blob });
+        // Canvas belleğini hemen bırak; çok sayfalı PDF'lerde telefonu zorlamasın
+        canvas.width = 0;
+        canvas.height = 0;
+        page.cleanup();
       }
 
       if (images.length === 0) throw new Error("PDF'te sayfa bulunamadı.");
       if (images.length === 1) {
         downloadBlob(images[0].data, images[0].name);
       } else {
+        setProgress("ZIP hazırlanıyor...");
         const zip = new JSZip();
         images.forEach((img) => zip.file(img.name, img.data));
         const zipBlob = await zip.generateAsync({ type: "blob" });
@@ -53,6 +61,7 @@ export default function PdfToImage() {
       setError(e instanceof Error ? e.message : "Bir hata oluştu.");
     } finally {
       setLoading(false);
+      setProgress("");
     }
   }
 
@@ -66,7 +75,7 @@ export default function PdfToImage() {
     >
       <Dropzone accept="application/pdf" files={file ? [file] : []} onFiles={(f) => setFile(f[0] ?? null)} />
       <PrimaryButton onClick={handleConvert} disabled={!file || loading}>
-        {loading ? "Dönüştürülüyor..." : "Görsele Çevir"}
+        {loading ? progress || "Dönüştürülüyor..." : "Görsele Çevir"}
       </PrimaryButton>
       {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
     </ToolShell>

@@ -64,6 +64,70 @@ export async function canvasToBlob(
   return blob;
 }
 
+/** Hedef formatın bu tarayıcıda gerçekten üretilebildiğini ucuza doğrular. */
+async function assertFormatSupported(format: string): Promise<void> {
+  const probe = document.createElement("canvas");
+  probe.width = 1;
+  probe.height = 1;
+  await canvasToBlob(probe, format);
+}
+
+/**
+ * Canvas sınırı aşıldığında bazı tarayıcılar hata vermez, canvas'ı boş bırakır.
+ * JPEG yolunda zemini beyaza boyadığımız için saydamlık = başarısız çizim demek.
+ */
+function looksBlank(ctx: CanvasRenderingContext2D, w: number, h: number): boolean {
+  const points: [number, number][] = [
+    [0, 0],
+    [Math.floor(w / 2), Math.floor(h / 2)],
+    [w - 1, h - 1],
+  ];
+  return points.every(([x, y]) => ctx.getImageData(x, y, 1, 1).data[3] === 0);
+}
+
+const SCALE_STEPS = [1, 0.75, 0.5, 0.35, 0.25];
+
+/**
+ * Cihazın canvas sınırını aşan görsellerde sessizce çökmek yerine kademeli
+ * küçülterek yeniden dener. `reduced` true ise çıktı istenenden küçüktür.
+ */
+export async function renderWithFallback(
+  targetW: number,
+  targetH: number,
+  format: string,
+  quality: number | undefined,
+  paint: (ctx: CanvasRenderingContext2D, w: number, h: number) => void
+): Promise<RenderResult> {
+  await assertFormatSupported(format);
+
+  let lastError: unknown = null;
+  for (const scale of SCALE_STEPS) {
+    const w = Math.max(1, Math.round(targetW * scale));
+    const h = Math.max(1, Math.round(targetH * scale));
+    const canvas = document.createElement("canvas");
+    try {
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Canvas oluşturulamadı.");
+      paint(ctx, w, h);
+      if (format === "image/jpeg" && looksBlank(ctx, w, h)) {
+        throw new Error("Canvas sınırı aşıldı.");
+      }
+      const blob = await canvasToBlob(canvas, format, quality);
+      return { blob, width: w, height: h, reduced: scale < 1 };
+    } catch (e) {
+      lastError = e;
+    } finally {
+      canvas.width = 0;
+      canvas.height = 0;
+    }
+  }
+  throw lastError instanceof Error
+    ? lastError
+    : new Error("Görsel bu cihaz için fazla büyük.");
+}
+
 export type Rect = { x: number; y: number; width: number; height: number };
 
 export type RenderOptions = {
@@ -75,7 +139,13 @@ export type RenderOptions = {
   quality?: number;
 };
 
-export type RenderResult = { blob: Blob; width: number; height: number };
+export type RenderResult = {
+  blob: Blob;
+  width: number;
+  height: number;
+  /** Cihaz sınırı nedeniyle çıktı istenenden küçük üretildiyse true. */
+  reduced?: boolean;
+};
 
 export async function renderImage(
   img: HTMLImageElement,
@@ -111,21 +181,18 @@ export async function renderImage(
     }
   }
 
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.max(1, Math.round(outW));
-  canvas.height = Math.max(1, Math.round(outH));
-  const ctx = canvas.getContext("2d")!;
-  ctx.imageSmoothingQuality = "high";
-  if (o.format === "image/jpeg") {
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-  }
-  ctx.drawImage(img, cx, cy, cw, ch, 0, 0, canvas.width, canvas.height);
-
-  const blob = await canvasToBlob(
-    canvas,
+  return renderWithFallback(
+    Math.max(1, Math.round(outW)),
+    Math.max(1, Math.round(outH)),
     o.format,
-    isLossy(o.format) ? (o.quality ?? 90) / 100 : undefined
+    isLossy(o.format) ? (o.quality ?? 90) / 100 : undefined,
+    (ctx, w, h) => {
+      ctx.imageSmoothingQuality = "high";
+      if (o.format === "image/jpeg") {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, w, h);
+      }
+      ctx.drawImage(img, cx, cy, cw, ch, 0, 0, w, h);
+    }
   );
-  return { blob, width: canvas.width, height: canvas.height };
 }
